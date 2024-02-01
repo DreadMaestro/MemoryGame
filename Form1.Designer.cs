@@ -47,7 +47,7 @@ namespace MemoryGame
             this.btnR4C3 = new System.Windows.Forms.Button();
             this.btnR4C2 = new System.Windows.Forms.Button();
             this.btnR4C1 = new System.Windows.Forms.Button();
-            this.lblClickCounter = new System.Windows.Forms.Label();
+            this.lblintClickCounter = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -232,15 +232,15 @@ namespace MemoryGame
             this.btnR4C1.Visible = false;
             this.btnR4C1.Click += new System.EventHandler(this.btnR4C1_Click);
             // 
-            // lblClickCounter
+            // lblintClickCounter
             // 
-            this.lblClickCounter.AutoSize = true;
-            this.lblClickCounter.Location = new System.Drawing.Point(134, 36);
-            this.lblClickCounter.Name = "lblClickCounter";
-            this.lblClickCounter.Size = new System.Drawing.Size(76, 13);
-            this.lblClickCounter.TabIndex = 21;
-            this.lblClickCounter.Text = "Click Counter: ";
-            this.lblClickCounter.Visible = false;
+            this.lblintClickCounter.AutoSize = true;
+            this.lblintClickCounter.Location = new System.Drawing.Point(134, 36);
+            this.lblintClickCounter.Name = "lblintClickCounter";
+            this.lblintClickCounter.Size = new System.Drawing.Size(76, 13);
+            this.lblintClickCounter.TabIndex = 21;
+            this.lblintClickCounter.Text = "Click Counter: ";
+            this.lblintClickCounter.Visible = false;
             // 
             // btnReset
             // 
@@ -259,7 +259,7 @@ namespace MemoryGame
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(382, 331);
             this.Controls.Add(this.btnReset);
-            this.Controls.Add(this.lblClickCounter);
+            this.Controls.Add(this.lblintClickCounter);
             this.Controls.Add(this.btnR4C4);
             this.Controls.Add(this.btnR4C3);
             this.Controls.Add(this.btnR4C2);
@@ -305,7 +305,7 @@ namespace MemoryGame
         private System.Windows.Forms.Button btnR4C3;
         private System.Windows.Forms.Button btnR4C2;
         private System.Windows.Forms.Button btnR4C1;
-        private System.Windows.Forms.Label lblClickCounter;
+        private System.Windows.Forms.Label lblintClickCounter;
         private System.Windows.Forms.Button btnReset;
     }
 }

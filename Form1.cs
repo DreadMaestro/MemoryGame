@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MemoryGame
@@ -17,18 +12,16 @@ namespace MemoryGame
             InitializeComponent();
         }
 
-        static int[] TestArray = new int[16];
+        static int[] arrPairedNum = new int[16];
         static int intTurnCount = 0;
-        static String[,] arrSelection = new String[2,2];
-        static int ClickCounter = 0;
+        static String[,] arrPlayerSelection = new String[2,2];
+        static int intClickCounter = 0;
 
 
-        public void GridSetup(bool boolState)
+        public void SetupGrid(bool boolState)
         {
             btnStart.Visible = !boolState;
             lblGameTitle.Visible = !boolState;
-
-            //btnReset.Visible = boolState;
 
             btnR1C1.Visible = boolState;
             btnR1C2.Visible = boolState;
@@ -47,82 +40,95 @@ namespace MemoryGame
             btnR4C3.Visible = boolState;
             btnR4C4.Visible = boolState;
 
-            lblClickCounter.Visible = boolState;
+            lblintClickCounter.Visible = boolState;
         }
 
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            GridSetup(true);
+            SetupGrid(true);
 
             Random random = new Random();
 
             HashSet<int> usedColValues = new HashSet<int>();
-            int randomNumber;
+            int intRandomNumber;
 
-            for (int row = 0; row < 16; row++)
+            const int intGridSize = 16;
+
+            for (int row = 0; row < intGridSize; row++)
             {
                 do
                 {
-                    randomNumber = random.Next(1, 17);
+                    intRandomNumber = random.Next(1, intGridSize + 1);
 
-                } while (usedColValues.Contains(randomNumber));
+                } while (usedColValues.Contains(intRandomNumber));
 
-                TestArray[row] = randomNumber;
+                arrPairedNum[row] = intRandomNumber;
 
-                usedColValues.Add(randomNumber);
+                usedColValues.Add(intRandomNumber);
 
             }
 
-            for (int row = 0; row < 16; row++)
+            const int intEqualizer = 8;
+
+            for (int row = 0; row < intGridSize; row++)
             {
 
-                if (TestArray[row] > 8)
+                if (arrPairedNum[row] > intEqualizer)
                 {
-                    TestArray[row] = TestArray[row] - 8;
+                    arrPairedNum[row] = arrPairedNum[row] - intEqualizer;
                 }
 
 
             }
-            //setButtons();
+
+
             lblGameTitle.Visible = false;
 
         }
 
-        public void setButtons()
-        {
-            int ArrayValues = 0;
-            for (int row = 0; row < 4; row++)
-            {
-                for (int col = 0; col < 4; col++)
-                {
+        //public void SetButtons()
+        //{
+        //    int arrValueIndex = 0;
+
+        //    const int intRow = 4;      
+        //    for (int row = 0; row < intRow; row++)
+        //    {
+
+        //        const int intCol = 4;
+        //        for (int col = 0; col < intCol; col++)
+        //        {
                     
-                    string buttonName = "btnR" + (row + 1).ToString() + "C" + (col + 1).ToString();
-                    Button dynamicButton = Controls.Find(buttonName, true).FirstOrDefault() as Button;
-                    dynamicButton.Text = TestArray[ArrayValues].ToString();
-                    ArrayValues++;
-                }
+        //            //string buttonName = "btnR" + (row + 1).ToString() + "C" + (col + 1).ToString();
+        //            string strButtonName = $"btnR{row + 1}C{col + 1}";
+        //            Button btnDynamicButton = Controls.Find(strButtonName, true).FirstOrDefault() as Button;
+        //            btnDynamicButton.Text = arrPairedNum[arrValueIndex].ToString();
+        //            arrValueIndex++;
+        //        }
 
-            }
+        //    }
 
-        }
+        //}
 
-        public void CheckIfDone()
+        public void VerifyCompletionStatus()
         {
 
-            int Counter = 0;
+            int intCounter = 0;
 
-            for (int row = 0; row < 4; row++)
+
+            int intRowLimit = 4;
+            for (int row = 0; row < intRowLimit; row++)
             {
-                for (int col = 0; col < 4; col++)
+                int intColLimit = 4;
+                for (int col = 0; col < intColLimit; col++)
                 {
 
-                    string buttonName = "btnR" + (row + 1).ToString() + "C" + (col + 1).ToString();
-                    Button dynamicButton = Controls.Find(buttonName, true).FirstOrDefault() as Button;
-                    
-                    if (dynamicButton.Enabled == false)
+                    string strButtonName = $"btnR{row + 1}C{col + 1}";
+                    Button btnDynamicButton = Controls.Find(strButtonName, true).FirstOrDefault() as Button;
+
+                    if (btnDynamicButton.Enabled == false)
                     {
-                        Counter++;
+                        intCounter++;
                     }
 
 
@@ -130,15 +136,15 @@ namespace MemoryGame
 
             }
 
-            if (Counter == 16)
+            if (intCounter == 16)
             {
-                lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
-                MessageBox.Show("You won in "+ ClickCounter.ToString() + " clicks!");
+                lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
+                MessageBox.Show("You won in "+ intClickCounter.ToString() + " clicks!");
 
-                GridSetup(false);
+                SetupGrid(false);
 
-                ClickCounter = 0;
-                resetGrid();
+                intClickCounter = 0;
+                ResetGrid();
                 return;
             }
 
@@ -146,7 +152,7 @@ namespace MemoryGame
         }
 
 
-        public void resetGrid()
+        public void ResetGrid()
         {
 
             for (int row = 0; row < 4; row++)
@@ -154,54 +160,52 @@ namespace MemoryGame
                 for (int col = 0; col < 4; col++)
                 {
 
-                    string buttonName = "btnR" + (row + 1).ToString() + "C" + (col + 1).ToString();
-                    Button dynamicButton = Controls.Find(buttonName, true).FirstOrDefault() as Button;
+                    string strButtonName = $"btnR{row + 1}C{col + 1}";
+                    Button btnDynamicButton = Controls.Find(strButtonName, true).FirstOrDefault() as Button;
 
-                    dynamicButton.Text = "";
-                    dynamicButton.Enabled = true;
+                    btnDynamicButton.Text = "";
+                    btnDynamicButton.Enabled = true;
                                                   
                 }
 
             }
-            ClickCounter = 0;
-            TestArray = new int[16];
+            intClickCounter = 0;
+            arrPairedNum = new int[16];
             intTurnCount = 0;
-            arrSelection = new String[2, 2];
+            arrPlayerSelection = new String[2, 2];
 
         }
 
 
 
-        public void TheChecker(String btnName, int theValue)
+        public void CheckGameState(String btnName, int theValue)
         {
 
-            Button ClickedButton = Controls.Find(btnName, true).FirstOrDefault() as Button;
+            Button btnClickedButton = Controls.Find(btnName, true).FirstOrDefault() as Button;
 
 
             if (intTurnCount == 0)
             {
                 intTurnCount = 1;
-                ClickedButton.Text = theValue.ToString();
-                arrSelection[0, 0] = theValue.ToString();
-                arrSelection[0, 1] = ClickedButton.Name.ToString();
+                btnClickedButton.Text = theValue.ToString();
+                arrPlayerSelection[0, 0] = theValue.ToString();
+                arrPlayerSelection[0, 1] = btnClickedButton.Name.ToString();
             }
-            else
-
-            if (intTurnCount == 1)
+            else if (intTurnCount == 1)
             {
-                if (arrSelection[0, 1] != ClickedButton.Name.ToString())
+                if (arrPlayerSelection[0, 1] != btnClickedButton.Name.ToString())
                 {
 
                     intTurnCount = 2;
-                    ClickedButton.Text = theValue.ToString();
-                    arrSelection[1, 0] = theValue.ToString();
-                    arrSelection[1, 1] = ClickedButton.Name.ToString();
+                    btnClickedButton.Text = theValue.ToString();
+                    arrPlayerSelection[1, 0] = theValue.ToString();
+                    arrPlayerSelection[1, 1] = btnClickedButton.Name.ToString();
 
-                    if (arrSelection[0, 0] == arrSelection[1, 0])
+                    if (arrPlayerSelection[0, 0] == arrPlayerSelection[1, 0])
                     {
 
-                        ButtonTextReset(true);
-                        arrSelection = new String[2, 2];
+                        ResetButtonText(true);
+                        arrPlayerSelection = new String[2, 2];
 
                     }
 
@@ -211,53 +215,53 @@ namespace MemoryGame
             {
                 intTurnCount = 0;
 
-                if (arrSelection[0, 0] == arrSelection[1, 0] && arrSelection[0, 0] != null && arrSelection[1, 0] != null)
+                if (arrPlayerSelection[0, 0] == arrPlayerSelection[1, 0] && arrPlayerSelection[0, 0] != null && arrPlayerSelection[1, 0] != null)
                 {
 
-                    ButtonTextReset(true);
+                    ResetButtonText(true);
 
-                    arrSelection = new String[2, 2];
+                    arrPlayerSelection = new String[2, 2];
 
-                    TheChecker(btnName, theValue);
+                    CheckGameState(btnName, theValue);
                 }
                 else
                 {
-                    if (arrSelection[0, 0] == null || arrSelection[1, 0] == null)
+                    if (arrPlayerSelection[0, 0] == null || arrPlayerSelection[1, 0] == null)
                     {
                         intTurnCount = 0;
-                        TheChecker(btnName, theValue);
+                        CheckGameState(btnName, theValue);
                         return;
                     }
 
-                    ButtonTextReset(false);
+                    ResetButtonText(false);
 
-                    arrSelection = new String[2, 2];
+                    arrPlayerSelection = new String[2, 2];
 
-                    TheChecker(btnName, theValue);
+                    CheckGameState(btnName, theValue);
                 }
 
 
 
             }
 
-            CheckIfDone();
+            VerifyCompletionStatus();
 
         }
 
-        public void ButtonTextReset(bool isToDisable)
+        public void ResetButtonText(bool boolDisable)
         {
             for (int x =0; x <2; x++)
             {
-                string buttonName = arrSelection[x, 1];
-                Button dynamicButton = Controls.Find(buttonName, true).FirstOrDefault() as Button;
+                string strButtonName = arrPlayerSelection[x, 1];
+                Button btnDynamicButton = Controls.Find(strButtonName, true).FirstOrDefault() as Button;
 
-                if (isToDisable)
+                if (boolDisable)
                 {
-                    dynamicButton.Enabled = false;
+                    btnDynamicButton.Enabled = false;
                 }
                 else
                 {
-                    dynamicButton.Text = "";
+                    btnDynamicButton.Text = "";
                 }
                 
             }
@@ -268,120 +272,120 @@ namespace MemoryGame
 
         private void btnR1C1_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR1C1", TestArray[0]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR1C1", arrPairedNum[0]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR1C2_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR1C2", TestArray[1]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR1C2", arrPairedNum[1]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR1C3_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR1C3", TestArray[2]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR1C3", arrPairedNum[2]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR1C4_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR1C4", TestArray[3]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR1C4", arrPairedNum[3]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR2C1_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR2C1", TestArray[4]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR2C1", arrPairedNum[4]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR2C2_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR2C2", TestArray[5]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR2C2", arrPairedNum[5]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR2C3_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR2C3", TestArray[6]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR2C3", arrPairedNum[6]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR2C4_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR2C4", TestArray[7]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR2C4", arrPairedNum[7]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR3C1_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR3C1", TestArray[8]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR3C1", arrPairedNum[8]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR3C2_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR3C2", TestArray[9]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR3C2", arrPairedNum[9]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR3C3_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR3C3", TestArray[10]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR3C3", arrPairedNum[10]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR3C4_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR3C4", TestArray[11]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR3C4", arrPairedNum[11]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
 
         }
 
         private void btnR4C1_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR4C1", TestArray[12]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR4C1", arrPairedNum[12]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR4C2_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR4C2", TestArray[13]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR4C2", arrPairedNum[13]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR4C3_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR4C3", TestArray[14]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR4C3", arrPairedNum[14]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnR4C4_Click(object sender, EventArgs e)
         {
-            ClickCounter++;
-            TheChecker("btnR4C4", TestArray[15]);
-            lblClickCounter.Text = "Click Counter: " + ClickCounter.ToString();
+            intClickCounter++;
+            CheckGameState("btnR4C4", arrPairedNum[15]);
+            lblintClickCounter.Text = "Click Counter: " + intClickCounter.ToString();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            resetGrid();
+            ResetGrid();
             btnStart.PerformClick();
         }
     }
